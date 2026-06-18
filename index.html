@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Resume Builder — Free & Instant</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #222222;
+    --border: #2e2e2e;
+    --accent: #6c63ff;
+    --accent2: #a78bfa;
+    --text: #f0f0f0;
+    --text-muted: #888;
+    --success: #10b981;
+    --error: #ef4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  header { padding: 20px 32px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+  .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  header h1 { font-family: 'Playfair Display', serif; font-size: 22px; background: linear-gradient(90deg, var(--accent2), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .badge { margin-left: auto; font-size: 11px; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color: #10b981; padding: 4px 10px; border-radius: 20px; }
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 24px; }
+  .hero { text-align: center; margin-bottom: 40px; }
+  .hero h2 { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
+  .hero p { color: var(--text-muted); font-size: 15px; }
+  .hero .pills { display: flex; justify-content: center; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .pill { font-size: 12px; padding: 4px 12px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); }
+  .mode-tabs { display: flex; gap: 8px; margin-bottom: 28px; }
+  .tab { flex: 1; padding: 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; text-align: center; transition: all 0.2s; }
+  .tab:hover { border-color: var(--accent); }
+  .tab.active { border-color: var(--accent); background: rgba(108,99,255,0.1); }
+  .tab-icon { font-size: 22px; margin-bottom: 6px; }
+  .tab-title { font-size: 14px; font-weight: 600; }
+  .tab-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 20px; }
+  .form-card h3 { font-size: 12px; font-weight: 600; color: var(--accent2); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid.full { grid-template-columns: 1fr; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 12px; color: var(--text-muted); }
+  .field input, .field textarea { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; resize: vertical; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--accent); }
+  .field textarea { min-height: 80px; }
+  .improve-box textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; min-height: 200px; resize: vertical; }
+  .improve-box textarea:focus { outline: none; border-color: var(--accent); }
+  .improve-note { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+  .tone-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tone-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-size: 12px; cursor: pointer; transition: all 0.2s; }
+  .tone-btn.active { border-color: var(--accent); background: rgba(108,99,255,0.15); color: var(--accent2); }
+  .btn-generate { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-generate:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .output-section { display: none; margin-top: 32px; }
+  .output-section.visible { display: block; }
+  .output-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .output-header h3 { font-size: 16px; font-weight: 600; }
+  .btn-download { background: var(--success); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .btn-download:hover { opacity: 0.85; }
+  #resumePreview { background: #fff; color: #111; border-radius: 10px; padding: 48px 52px; font-family: 'Inter', sans-serif; line-height: 1.6; min-height: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+  #resumePreview h1 { font-size: 26px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+  #resumePreview .contact-line { font-size: 13px; color: #555; margin-bottom: 20px; }
+  #resumePreview h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: #6c63ff; border-bottom: 2px solid #6c63ff; padding-bottom: 4px; margin: 20px 0 10px; }
+  #resumePreview p { font-size: 13px; color: #333; margin-bottom: 6px; }
+  #resumePreview ul { padding-left: 18px; }
+  #resumePreview ul li { font-size: 13px; color: #333; margin-bottom: 4px; }
+  #resumePreview strong { color: #1a1a2e; }
+  .loading-wrap { text-align: center; padding: 48px; display: none; }
+  .loading-wrap.visible { display: block; }
+  .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { color: var(--text-muted); font-size: 14px; }
+  .error-box { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 14px; color: #fca5a5; font-size: 13px; margin-top: 12px; display: none; }
+  .error-box.visible { display: block; }
+  @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } #resumePreview { padding: 28px 20px; } .mode-tabs { flex-direction: column; } header { padding: 16px; } header h1 { font-size: 18px; } }
+  @media print { body { background: #fff; } header, .hero, .mode-tabs, .form-card, .btn-generate, .output-header, .loading-wrap { display: none !important; } #resumePreview { box-shadow: none; padding: 0; border-radius: 0; } .output-section { display: block !important; margin: 0; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo-icon">📄</div>
+  <h1>AI Resume Builder</h1>
+  <span class="badge">✦ 100% Free</span>
+</header>
+<div class="container">
+  <div class="hero">
+    <h2>Build a job-winning resume in seconds ✨</h2>
+    <p>Powered by AI — no sign-up, no cost, no limits.</p>
+    <div class="pills">
+      <span class="pill">✅ No login needed</span>
+      <span class="pill">✅ Free forever</span>
+      <span class="pill">✅ Print-ready PDF</span>
+      <span class="pill">✅ AI-powered</span>
+    </div>
+  </div>
+  <div class="mode-tabs">
+    <div class="tab active" onclick="setMode('build')" id="tab-build">
+      <div class="tab-icon">✍️</div>
+      <div class="tab-title">Build from Scratch</div>
+      <div class="tab-desc">Fill in your details, AI writes it</div>
+    </div>
+    <div class="tab" onclick="setMode('improve')" id="tab-improve">
+      <div class="tab-icon">✨</div>
+      <div class="tab-title">Improve Existing</div>
+      <div class="tab-desc">Paste resume, AI polishes it</div>
+    </div>
+  </div>
+  <div id="buildMode">
+    <div class="form-card">
+      <h3>Personal Info</h3>
+      <div class="form-grid">
+        <div class="field"><label>Full Name *</label><input id="name" placeholder="Your Full Name" /></div>
+        <div class="field"><label>Job Title / Role *</label><input id="role" placeholder="e.g. Web Developer" /></div>
+        <div class="field"><label>Email</label><input id="email" placeholder="you@email.com" /></div>
+        <div class="field"><label>Phone</label><input id="phone" placeholder="+91 98765 43210" /></div>
+        <div class="field"><label>Location</label><input id="location" placeholder="City, Country" /></div>
+        <div class="field"><label>LinkedIn / Portfolio</label><input id="links" placeholder="linkedin.com/in/yourname" /></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <h3>Work Experience</h3>
+      <div class="form-grid full">
+        <div class="field">
+          <label>Company, role, duration & key achievements</label>
+          <textarea id="experience" placeholder="e.g. ABC Company — Marketing Manager (2022–2024): Led campaigns that increased sales by 30%..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="form-card">
+      <h3>Education</h3>
+      <div class="form-grid full">
+        <div class="field">
+          <label>Degree, college, year</label>
+          <textarea id="education" placeholder="e.g. B.Tech Computer Science — XYZ University (2019–2023)"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="form-card">
+      <h3>Skills & Projects</h3>
+      <div class="form-grid">
+        <div class="field"><label>Skills</label><textarea id="skills" placeholder="HTML, CSS, JavaScript..."></textarea></div>
+        <div class="field"><label>Projects / Achievements</label><textarea id="projects" placeholder="Built an e-commerce site..."></textarea></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <h3>Tone</h3>
+      <div class="tone-row" id="toneRow">
+        <button class="tone-btn active" onclick="setTone('Professional')">Professional</button>
+        <button class="tone-btn" onclick="setTone('Creative')">Creative</button>
+        <button class="tone-btn" onclick="setTone('Fresher')">Fresher</button>
+        <button class="tone-btn" onclick="setTone('Technical')">Technical</button>
+      </div>
+    </div>
+  </div>
+  <div id="improveMode" style="display:none;">
+    <div class="form-card">
+      <h3>Paste Your Existing Resume</h3>
+      <div class="improve-box">
+        <textarea id="existingResume" placeholder="Paste your current resume text here..."></textarea>
+      </div>
+      <p class="improve-note">💡 AI will rewrite with stronger bullet points & cleaner structure.</p>
+    </div>
+    <div class="form-card">
+      <h3>Tone</h3>
+      <div class="tone-row" id="toneRow2">
+        <button class="tone-btn active" onclick="setTone2('Professional')">Professional</button>
+        <button class="tone-btn" onclick="setTone2('Creative')">Creative</button>
+        <button class="tone-btn" onclick="setTone2('Fresher')">Fresher</button>
+        <button class="tone-btn" onclick="setTone2('Technical')">Technical</button>
+      </div>
+    </div>
+  </div>
+  <button class="btn-generate" onclick="generate()" id="genBtn">✨ Generate My Resume — Free</button>
+  <div class="error-box" id="errorBox"></div>
+  <div class="loading-wrap" id="loadingWrap">
+    <div class="spinner"></div>
+    <div class="loading-text">AI is crafting your resume...</div>
+  </div>
+  <div class="output-section" id="outputSection">
+    <div class="output-header">
+      <h3>✅ Your Resume is Ready!</h3>
+      <button class="btn-download" onclick="window.print()">🖨️ Download PDF</button>
+    </div>
+    <div id="resumePreview"></div>
+  </div>
+</div>
+<script>
+let currentMode = 'build';
+let currentTone = 'Professional';
+let currentTone2 = 'Professional';
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('buildMode').style.display = mode === 'build' ? 'block' : 'none';
+  document.getElementById('improveMode').style.display = mode === 'improve' ? 'block' : 'none';
+  document.getElementById('tab-build').className = 'tab' + (mode === 'build' ? ' active' : '');
+  document.getElementById('tab-improve').className = 'tab' + (mode === 'improve' ? ' active' : '');
+}
+function setTone(t) {
+  currentTone = t;
+  document.querySelectorAll('#toneRow .tone-btn').forEach(b => {
+    b.className = 'tone-btn' + (b.textContent.trim() === t ? ' active' : '');
+  });
+}
+function setTone2(t) {
+  currentTone2 = t;
+  document.querySelectorAll('#toneRow2 .tone-btn').forEach(b => {
+    b.className = 'tone-btn' + (b.textContent.trim() === t ? ' active' : '');
+  });
+}
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = msg;
+  box.className = 'error-box visible';
+}
+function hideError() {
+  document.getElementById('errorBox').className = 'error-box';
+}
+async function generate() {
+  hideError();
+  let prompt = '';
+  if (currentMode === 'build') {
+    const name = document.getElementById('name').value.trim();
+    const role = document.getElementById('role').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const location = document.getElementById('location').value.trim();
+    const links = document.getElementById('links').value.trim();
+    const experience = document.getElementById('experience').value.trim();
+    const education = document.getElementById('education').value.trim();
+    const skills = document.getElementById('skills').value.trim();
+    const projects = document.getElementById('projects').value.trim();
+    if (!name || !role) { showError('❌ Please fill in Name and Role at minimum.'); return; }
+    prompt = `Create a professional resume in clean HTML format.\n\nName: ${name}\nRole: ${role}\nEmail: ${email}\nPhone: ${phone}\nLocation: ${location}\nLinks: ${links}\nExperience: ${experience}\nEducation: ${education}\nSkills: ${skills}\nProjects: ${projects}\nTone: ${currentTone}\n\nReturn ONLY inner HTML (no html/body/style tags). Use:\n- <h1> for name\n- <p class="contact-line"> for contact info on one line\n- <h2> for section headers: EXPERIENCE, EDUCATION, SKILLS, PROJECTS\n- <p> and <ul><li> for content\n- <strong> for company/job titles\n\nMake bullet points action-oriented and impactful. 1 page length.`;
+  } else {
+    const existing = document.getElementById('existingResume').value.trim();
+    if (!existing) { showError('❌ Please paste your existing resume.'); return; }
+    prompt = `You are a professional resume editor. Improve this resume.\n\n${existing}\n\nTone: ${currentTone2}\n\nReturn ONLY inner HTML (no html/body/style tags). Use:\n- <h1> for name\n- <p class="contact-line"> for contact info\n- <h2> for section headers\n- <p> and <ul><li> for content\n- <strong> for titles\n\nImprove: stronger verbs, quantified results, cleaner structure.`;
+  }
+  document.getElementById('loadingWrap').className = 'loading-wrap visible';
+  document.getElementById('outputSection').className = 'output-section';
+  document.getElementById('genBtn').disabled = true;
+  try {
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Something went wrong');
+    document.getElementById('resumePreview').innerHTML = data.result;
+    document.getElementById('outputSection').className = 'output-section visible';
+    document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+  } catch (err) {
+    showError('❌ Error: ' + err.message);
+  } finally {
+    document.getElementById('loadingWrap').className = 'loading-wrap';
+    document.getElementById('genBtn').disabled = false;
+  }
+}
+</script>
+</body>
+</html>
