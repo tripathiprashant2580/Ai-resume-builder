@@ -15,7 +15,7 @@ exports.handler = async (event) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${GROQ_KEY}`
+        'Authorization': 'Bearer ' + GROQ_KEY
       },
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
@@ -28,10 +28,11 @@ exports.handler = async (event) => {
     const data = await response.json();
 
     if (!response.ok) {
-      return { statusCode: 500, body: JSON.stringify({ error: data.error?.message || 'Groq error' }) };
+      return { statusCode: 500, body: JSON.stringify({ error: (data.error && data.error.message) || 'Groq error' }) };
     }
 
     const text = data.choices[0].message.content.replace(/```html|```/g, '').trim();
+
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -41,4 +42,4 @@ exports.handler = async (event) => {
   } catch (err) {
     return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
   }
-};};
+};
