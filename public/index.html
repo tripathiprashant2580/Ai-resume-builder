@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Resume Builder — Free & Instant</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&family=Georgia&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0f0f0f;
@@ -31,7 +30,7 @@
   .hero p { color: var(--text-muted); font-size: 15px; }
   .hero .pills { display: flex; justify-content: center; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
   .pill { font-size: 12px; padding: 4px 12px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); }
-  .mode-tabs { display: flex; gap: 8px; margin-bottom: 28px; }
+  .mode-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
   .tab { flex: 1; padding: 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; text-align: center; transition: all 0.2s; }
   .tab:hover { border-color: var(--accent); }
   .tab.active { border-color: var(--accent); background: rgba(108,99,255,0.1); }
@@ -53,6 +52,22 @@
   .tone-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .tone-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-size: 12px; cursor: pointer; transition: all 0.2s; }
   .tone-btn.active { border-color: var(--accent); background: rgba(108,99,255,0.15); color: var(--accent2); }
+
+  /* TEMPLATE PICKER */
+  .template-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .template-card { border: 2px solid var(--border); border-radius: 10px; padding: 12px; cursor: pointer; text-align: center; transition: all 0.2s; background: var(--surface2); }
+  .template-card:hover { border-color: var(--accent); }
+  .template-card.active { border-color: var(--accent); background: rgba(108,99,255,0.12); }
+  .template-swatch { height: 46px; border-radius: 6px; margin-bottom: 8px; }
+  .template-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .swatch-purple { background: linear-gradient(135deg, #6c63ff, #a78bfa); }
+  .swatch-minimal { background: #fff; border: 1px solid #ccc; }
+  .swatch-bold { background: #111; border-top: 5px solid #f4b400; }
+  .swatch-navy { background: #0b1f3a; border-bottom: 5px solid #c9a227; }
+  .swatch-rose { background: linear-gradient(135deg, #f6c7c0, #d88c9a); }
+  .swatch-dark { background: #0d1117; border-bottom: 4px solid #58e6c1; }
+  .swatch-sunset { background: linear-gradient(135deg, #ff6a3d, #ffb37a); }
+
   .btn-generate { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .btn-generate:hover { opacity: 0.9; transform: translateY(-1px); }
   .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
@@ -62,14 +77,78 @@
   .output-header h3 { font-size: 16px; font-weight: 600; }
   .btn-download { background: var(--success); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
   .btn-download:hover { opacity: 0.85; }
-  #resumePreview { background: #fff; color: #111; border-radius: 10px; padding: 48px 52px; font-family: 'Inter', sans-serif; line-height: 1.6; min-height: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
-  #resumePreview h1 { font-size: 26px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
-  #resumePreview .contact-line { font-size: 13px; color: #555; margin-bottom: 20px; }
-  #resumePreview h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: #6c63ff; border-bottom: 2px solid #6c63ff; padding-bottom: 4px; margin: 20px 0 10px; }
-  #resumePreview p { font-size: 13px; color: #333; margin-bottom: 6px; }
-  #resumePreview ul { padding-left: 18px; }
-  #resumePreview ul li { font-size: 13px; color: #333; margin-bottom: 4px; }
-  #resumePreview strong { color: #1a1a2e; }
+
+  /* SHARED RESUME BOX */
+  #resumePreview { background: #fff; color: #1a1a1a; border-radius: 14px; padding: 48px 52px; font-family: 'Inter', sans-serif; line-height: 1.7; min-height: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); overflow: hidden; }
+  #resumePreview p:not(.contact-line), #resumePreview ul { font-size: 14px; border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  #resumePreview ul { padding-left: 38px; list-style: none; }
+  #resumePreview ul li { margin-bottom: 8px; position: relative; font-size: 14px; }
+  #resumePreview ul li:last-child { margin-bottom: 0; }
+
+  /* TEMPLATE 1: MODERN PURPLE */
+  #resumePreview.tpl-purple h1 { margin: -48px -52px 0; padding: 42px 52px 12px; background: linear-gradient(135deg, #6c63ff, #a78bfa); color: #fff; font-size: 30px; font-weight: 700; }
+  #resumePreview.tpl-purple .contact-line { margin: 0 -52px 28px; padding: 0 52px 28px; background: linear-gradient(135deg, #6c63ff, #a78bfa); color: rgba(255,255,255,0.9); font-size: 13px; }
+  #resumePreview.tpl-purple h2 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #6c63ff; background: rgba(108,99,255,0.12); display: inline-block; padding: 6px 16px; border-radius: 20px; margin: 26px 0 12px; }
+  #resumePreview.tpl-purple p:not(.contact-line), #resumePreview.tpl-purple ul { background: #f6f5ff; border-left: 4px solid #6c63ff; box-shadow: 0 2px 8px rgba(108,99,255,0.08); }
+  #resumePreview.tpl-purple ul li::before { content: '▸'; position: absolute; left: -18px; color: #6c63ff; font-weight: 700; }
+  #resumePreview.tpl-purple strong { color: #1a1a2e; }
+
+  /* TEMPLATE 2: MINIMAL CLASSIC */
+  #resumePreview.tpl-minimal { font-family: 'Playfair Display', serif; }
+  #resumePreview.tpl-minimal h1 { font-size: 32px; font-weight: 700; color: #111; text-align: center; margin-bottom: 6px; }
+  #resumePreview.tpl-minimal .contact-line { text-align: center; color: #666; font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: 0.05em; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+  #resumePreview.tpl-minimal h2 { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em; color: #111; text-align: center; margin: 28px 0 14px; }
+  #resumePreview.tpl-minimal h2::after { content: ''; display: block; width: 40px; height: 2px; background: #111; margin: 8px auto 0; }
+  #resumePreview.tpl-minimal p, #resumePreview.tpl-minimal ul li { font-family: 'Inter', sans-serif; color: #333; }
+  #resumePreview.tpl-minimal p:not(.contact-line), #resumePreview.tpl-minimal ul { background: #fafafa; border: 1px solid #e8e8e8; }
+  #resumePreview.tpl-minimal ul li::before { content: '—'; position: absolute; left: -18px; color: #999; }
+  #resumePreview.tpl-minimal strong { color: #000; }
+
+  /* TEMPLATE 3: BOLD BLACK */
+  #resumePreview.tpl-bold h1 { margin: -48px -52px 0; padding: 40px 52px 14px; background: #111; color: #fff; font-size: 30px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em; }
+  #resumePreview.tpl-bold .contact-line { margin: 0 -52px 28px; padding: 0 52px 24px; background: #111; color: #f4b400; font-size: 13px; font-weight: 600; border-bottom: 4px solid #f4b400; }
+  #resumePreview.tpl-bold h2 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #fff; background: #111; display: inline-block; padding: 6px 16px 6px 14px; border-left: 4px solid #f4b400; margin: 26px 0 12px; }
+  #resumePreview.tpl-bold p:not(.contact-line), #resumePreview.tpl-bold ul { background: #fafafa; border-left: 4px solid #f4b400; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  #resumePreview.tpl-bold ul li::before { content: '■'; position: absolute; left: -18px; color: #f4b400; font-size: 10px; top: 4px; }
+  #resumePreview.tpl-bold strong { color: #111; font-weight: 800; }
+
+  /* TEMPLATE 4: NAVY CORPORATE */
+  #resumePreview.tpl-navy { font-family: Georgia, serif; }
+  #resumePreview.tpl-navy h1 { margin: -48px -52px 0; padding: 40px 52px 16px; background: #0b1f3a; color: #fff; font-size: 28px; font-weight: 700; }
+  #resumePreview.tpl-navy .contact-line { margin: 0 -52px 28px; padding: 0 52px 20px; background: #0b1f3a; color: #c9a227; font-size: 13px; border-bottom: 3px solid #c9a227; }
+  #resumePreview.tpl-navy h2 { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #fff; background: #0b1f3a; display: inline-block; padding: 6px 16px; border-radius: 4px; margin: 26px 0 12px; }
+  #resumePreview.tpl-navy p:not(.contact-line), #resumePreview.tpl-navy ul { background: #f4f7fb; border-left: 4px solid #c9a227; color: #222; }
+  #resumePreview.tpl-navy ul li::before { content: '◆'; position: absolute; left: -18px; color: #c9a227; font-size: 9px; top: 5px; }
+  #resumePreview.tpl-navy strong { color: #0b1f3a; }
+
+  /* TEMPLATE 5: ROSE GOLD ELEGANT */
+  #resumePreview.tpl-rose { font-family: 'Playfair Display', serif; }
+  #resumePreview.tpl-rose h1 { margin: -48px -52px 0; padding: 42px 52px 14px; background: linear-gradient(135deg, #f6c7c0, #e8a0a8, #d88c9a); color: #3a1f24; font-size: 30px; font-weight: 700; }
+  #resumePreview.tpl-rose .contact-line { margin: 0 -52px 28px; padding: 0 52px 24px; background: linear-gradient(135deg, #f6c7c0, #e8a0a8, #d88c9a); color: #5c2a32; font-size: 13px; font-family: 'Inter', sans-serif; }
+  #resumePreview.tpl-rose h2 { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #ad5d6c; background: rgba(216,140,154,0.15); display: inline-block; padding: 6px 16px; border-radius: 20px; margin: 26px 0 12px; }
+  #resumePreview.tpl-rose p, #resumePreview.tpl-rose ul li { font-family: 'Inter', sans-serif; color: #3a2a2c; }
+  #resumePreview.tpl-rose p:not(.contact-line), #resumePreview.tpl-rose ul { background: #fdf4f5; border-left: 4px solid #d88c9a; }
+  #resumePreview.tpl-rose ul li::before { content: '❀'; position: absolute; left: -18px; color: #d88c9a; font-size: 11px; }
+  #resumePreview.tpl-rose strong { color: #5c2a32; }
+
+  /* TEMPLATE 6: DARK TECH */
+  #resumePreview.tpl-dark { background: #0d1117; color: #c9d1d9; }
+  #resumePreview.tpl-dark h1 { margin: -48px -52px 0; padding: 42px 52px 14px; background: #161b22; color: #58e6c1; font-size: 28px; font-weight: 700; font-family: monospace; border-bottom: 2px solid #58e6c1; }
+  #resumePreview.tpl-dark .contact-line { margin: 0 -52px 28px; padding: 14px 52px 0; background: #161b22; color: #8b949e; font-size: 12px; font-family: monospace; }
+  #resumePreview.tpl-dark h2 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #0d1117; background: #58e6c1; display: inline-block; padding: 5px 14px; border-radius: 4px; margin: 26px 0 12px; font-family: monospace; }
+  #resumePreview.tpl-dark p, #resumePreview.tpl-dark ul li { color: #c9d1d9; }
+  #resumePreview.tpl-dark p:not(.contact-line), #resumePreview.tpl-dark ul { background: #161b22; border: 1px solid #30363d; }
+  #resumePreview.tpl-dark ul li::before { content: '>'; position: absolute; left: -18px; color: #58e6c1; font-weight: 700; font-family: monospace; }
+  #resumePreview.tpl-dark strong { color: #58e6c1; }
+
+  /* TEMPLATE 7: SUNSET GRADIENT */
+  #resumePreview.tpl-sunset h1 { margin: -48px -52px 0; padding: 42px 52px 14px; background: linear-gradient(135deg, #ff6a3d, #ff8f5e, #ffb37a); color: #fff; font-size: 30px; font-weight: 800; }
+  #resumePreview.tpl-sunset .contact-line { margin: 0 -52px 28px; padding: 0 52px 24px; background: linear-gradient(135deg, #ff6a3d, #ff8f5e, #ffb37a); color: rgba(255,255,255,0.95); font-size: 13px; }
+  #resumePreview.tpl-sunset h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #fff; background: linear-gradient(135deg, #ff6a3d, #ff8f5e); display: inline-block; padding: 6px 16px; border-radius: 20px; margin: 26px 0 12px; }
+  #resumePreview.tpl-sunset p:not(.contact-line), #resumePreview.tpl-sunset ul { background: #fff6f1; border-left: 4px solid #ff6a3d; }
+  #resumePreview.tpl-sunset ul li::before { content: '●'; position: absolute; left: -18px; color: #ff6a3d; font-size: 8px; top: 6px; }
+  #resumePreview.tpl-sunset strong { color: #c4451f; }
+
   .loading-wrap { text-align: center; padding: 48px; display: none; }
   .loading-wrap.visible { display: block; }
   .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
@@ -77,17 +156,35 @@
   .loading-text { color: var(--text-muted); font-size: 14px; }
   .error-box { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 14px; color: #fca5a5; font-size: 13px; margin-top: 12px; display: none; }
   .error-box.visible { display: block; }
-  @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } #resumePreview { padding: 28px 20px; } .mode-tabs { flex-direction: column; } header { padding: 16px; } header h1 { font-size: 18px; } }
-  @media print { body { background: #fff; } header, .hero, .mode-tabs, .form-card, .btn-generate, .output-header, .loading-wrap { display: none !important; } #resumePreview { box-shadow: none; padding: 0; border-radius: 0; } .output-section { display: block !important; margin: 0; } }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    #resumePreview { padding: 28px 20px; }
+    #resumePreview h1, #resumePreview .contact-line { margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; }
+    .mode-tabs { flex-direction: column; }
+    header { padding: 16px; }
+    header h1 { font-size: 18px; }
+    .template-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media print {
+    body { background: #fff; }
+    header, .hero, .mode-tabs, .form-card, .btn-generate, .output-header, .loading-wrap { display: none !important; }
+    #resumePreview { box-shadow: none; padding: 0; border-radius: 0; }
+    .output-section { display: block !important; margin: 0; }
+  }
 </style>
 </head>
 <body>
+
 <header>
   <div class="logo-icon">📄</div>
   <h1>AI Resume Builder</h1>
   <span class="badge">✦ 100% Free</span>
 </header>
+
 <div class="container">
+
   <div class="hero">
     <h2>Build a job-winning resume in seconds ✨</h2>
     <p>Powered by AI — no sign-up, no cost, no limits.</p>
@@ -95,9 +192,10 @@
       <span class="pill">✅ No login needed</span>
       <span class="pill">✅ Free forever</span>
       <span class="pill">✅ Print-ready PDF</span>
-      <span class="pill">✅ AI-powered</span>
+      <span class="pill">✅ 4 Templates</span>
     </div>
   </div>
+
   <div class="mode-tabs">
     <div class="tab active" onclick="setMode('build')" id="tab-build">
       <div class="tab-icon">✍️</div>
@@ -110,6 +208,42 @@
       <div class="tab-desc">Paste resume, AI polishes it</div>
     </div>
   </div>
+
+  <!-- TEMPLATE PICKER -->
+  <div class="form-card">
+    <h3>Choose Template</h3>
+    <div class="template-grid">
+      <div class="template-card active" onclick="setTemplate('tpl-purple', this)">
+        <div class="template-swatch swatch-purple"></div>
+        <div class="template-name">Modern Purple</div>
+      </div>
+      <div class="template-card" onclick="setTemplate('tpl-minimal', this)">
+        <div class="template-swatch swatch-minimal"></div>
+        <div class="template-name">Minimal Classic</div>
+      </div>
+      <div class="template-card" onclick="setTemplate('tpl-bold', this)">
+        <div class="template-swatch swatch-bold"></div>
+        <div class="template-name">Bold Black</div>
+      </div>
+      <div class="template-card" onclick="setTemplate('tpl-navy', this)">
+        <div class="template-swatch swatch-navy"></div>
+        <div class="template-name">Navy Corporate</div>
+      </div>
+      <div class="template-card" onclick="setTemplate('tpl-rose', this)">
+        <div class="template-swatch swatch-rose"></div>
+        <div class="template-name">Rose Gold Elegant</div>
+      </div>
+      <div class="template-card" onclick="setTemplate('tpl-dark', this)">
+        <div class="template-swatch swatch-dark"></div>
+        <div class="template-name">Dark Tech</div>
+      </div>
+      <div class="template-card" onclick="setTemplate('tpl-sunset', this)">
+        <div class="template-swatch swatch-sunset"></div>
+        <div class="template-name">Sunset Gradient</div>
+      </div>
+    </div>
+  </div>
+
   <div id="buildMode">
     <div class="form-card">
       <h3>Personal Info</h3>
@@ -122,6 +256,7 @@
         <div class="field"><label>LinkedIn / Portfolio</label><input id="links" placeholder="linkedin.com/in/yourname" /></div>
       </div>
     </div>
+
     <div class="form-card">
       <h3>Work Experience</h3>
       <div class="form-grid full">
@@ -131,6 +266,7 @@
         </div>
       </div>
     </div>
+
     <div class="form-card">
       <h3>Education</h3>
       <div class="form-grid full">
@@ -140,6 +276,7 @@
         </div>
       </div>
     </div>
+
     <div class="form-card">
       <h3>Skills & Projects</h3>
       <div class="form-grid">
@@ -147,6 +284,7 @@
         <div class="field"><label>Projects / Achievements</label><textarea id="projects" placeholder="Built an e-commerce site..."></textarea></div>
       </div>
     </div>
+
     <div class="form-card">
       <h3>Tone</h3>
       <div class="tone-row" id="toneRow">
@@ -157,6 +295,7 @@
       </div>
     </div>
   </div>
+
   <div id="improveMode" style="display:none;">
     <div class="form-card">
       <h3>Paste Your Existing Resume</h3>
@@ -175,24 +314,32 @@
       </div>
     </div>
   </div>
+
   <button class="btn-generate" onclick="generate()" id="genBtn">✨ Generate My Resume — Free</button>
+
   <div class="error-box" id="errorBox"></div>
+
   <div class="loading-wrap" id="loadingWrap">
     <div class="spinner"></div>
     <div class="loading-text">AI is crafting your resume...</div>
   </div>
+
   <div class="output-section" id="outputSection">
     <div class="output-header">
       <h3>✅ Your Resume is Ready!</h3>
       <button class="btn-download" onclick="window.print()">🖨️ Download PDF</button>
     </div>
-    <div id="resumePreview"></div>
+    <div id="resumePreview" class="tpl-purple"></div>
   </div>
+
 </div>
+
 <script>
 let currentMode = 'build';
 let currentTone = 'Professional';
 let currentTone2 = 'Professional';
+let currentTemplate = 'tpl-purple';
+
 function setMode(mode) {
   currentMode = mode;
   document.getElementById('buildMode').style.display = mode === 'build' ? 'block' : 'none';
@@ -200,18 +347,26 @@ function setMode(mode) {
   document.getElementById('tab-build').className = 'tab' + (mode === 'build' ? ' active' : '');
   document.getElementById('tab-improve').className = 'tab' + (mode === 'improve' ? ' active' : '');
 }
+
+function setTemplate(tpl, el) {
+  currentTemplate = tpl;
+  document.querySelectorAll('.template-card').forEach(function(c) { c.classList.remove('active'); });
+  el.classList.add('active');
+}
+
 function setTone(t) {
   currentTone = t;
-  document.querySelectorAll('#toneRow .tone-btn').forEach(b => {
+  document.querySelectorAll('#toneRow .tone-btn').forEach(function(b) {
     b.className = 'tone-btn' + (b.textContent.trim() === t ? ' active' : '');
   });
 }
 function setTone2(t) {
   currentTone2 = t;
-  document.querySelectorAll('#toneRow2 .tone-btn').forEach(b => {
+  document.querySelectorAll('#toneRow2 .tone-btn').forEach(function(b) {
     b.className = 'tone-btn' + (b.textContent.trim() === t ? ' active' : '');
   });
 }
+
 function showError(msg) {
   const box = document.getElementById('errorBox');
   box.textContent = msg;
@@ -220,9 +375,11 @@ function showError(msg) {
 function hideError() {
   document.getElementById('errorBox').className = 'error-box';
 }
+
 async function generate() {
   hideError();
   let prompt = '';
+
   if (currentMode === 'build') {
     const name = document.getElementById('name').value.trim();
     const role = document.getElementById('role').value.trim();
@@ -234,27 +391,52 @@ async function generate() {
     const education = document.getElementById('education').value.trim();
     const skills = document.getElementById('skills').value.trim();
     const projects = document.getElementById('projects').value.trim();
+
     if (!name || !role) { showError('❌ Please fill in Name and Role at minimum.'); return; }
-    prompt = `Create a professional resume in clean HTML format.\n\nName: ${name}\nRole: ${role}\nEmail: ${email}\nPhone: ${phone}\nLocation: ${location}\nLinks: ${links}\nExperience: ${experience}\nEducation: ${education}\nSkills: ${skills}\nProjects: ${projects}\nTone: ${currentTone}\n\nReturn ONLY inner HTML (no html/body/style tags). Use:\n- <h1> for name\n- <p class="contact-line"> for contact info on one line\n- <h2> for section headers: EXPERIENCE, EDUCATION, SKILLS, PROJECTS\n- <p> and <ul><li> for content\n- <strong> for company/job titles\n\nMake bullet points action-oriented and impactful. 1 page length.`;
+
+    prompt = 'Create a professional resume in clean HTML format.\n\n' +
+      'Name: ' + name + '\nRole: ' + role + '\nEmail: ' + email + '\nPhone: ' + phone +
+      '\nLocation: ' + location + '\nLinks: ' + links + '\nExperience: ' + experience +
+      '\nEducation: ' + education + '\nSkills: ' + skills + '\nProjects: ' + projects +
+      '\nTone: ' + currentTone + '\n\n' +
+      'Return ONLY inner HTML (no html/body/style tags). Use:\n' +
+      '- <h1> for name\n- <p class="contact-line"> for contact info on one line\n' +
+      '- <h2> for section headers: EXPERIENCE, EDUCATION, SKILLS, PROJECTS\n' +
+      '- <p> and <ul><li> for content\n- <strong> for company/job titles\n\n' +
+      'Make bullet points action-oriented and impactful. 1 page length.';
+
   } else {
     const existing = document.getElementById('existingResume').value.trim();
     if (!existing) { showError('❌ Please paste your existing resume.'); return; }
-    prompt = `You are a professional resume editor. Improve this resume.\n\n${existing}\n\nTone: ${currentTone2}\n\nReturn ONLY inner HTML (no html/body/style tags). Use:\n- <h1> for name\n- <p class="contact-line"> for contact info\n- <h2> for section headers\n- <p> and <ul><li> for content\n- <strong> for titles\n\nImprove: stronger verbs, quantified results, cleaner structure.`;
+
+    prompt = 'You are a professional resume editor. Improve this resume.\n\n' + existing +
+      '\n\nTone: ' + currentTone2 + '\n\n' +
+      'Return ONLY inner HTML (no html/body/style tags). Use:\n' +
+      '- <h1> for name\n- <p class="contact-line"> for contact info\n- <h2> for section headers\n' +
+      '- <p> and <ul><li> for content\n- <strong> for titles\n\n' +
+      'Improve: stronger verbs, quantified results, cleaner structure.';
   }
+
   document.getElementById('loadingWrap').className = 'loading-wrap visible';
   document.getElementById('outputSection').className = 'output-section';
   document.getElementById('genBtn').disabled = true;
+
   try {
     const response = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({ prompt: prompt })
     });
+
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Something went wrong');
-    document.getElementById('resumePreview').innerHTML = data.result;
+
+    const preview = document.getElementById('resumePreview');
+    preview.className = currentTemplate;
+    preview.innerHTML = data.result;
     document.getElementById('outputSection').className = 'output-section visible';
     document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+
   } catch (err) {
     showError('❌ Error: ' + err.message);
   } finally {
