@@ -166,13 +166,13 @@
     header h1 { font-size: 18px; }
     .template-grid { grid-template-columns: 1fr 1fr; }
   }
-
-  @media print {
-    body { background: #fff; }
-    header, .hero, .mode-tabs, .form-card, .btn-generate, .output-header, .loading-wrap { display: none !important; }
-    #resumePreview { box-shadow: none; padding: 0; border-radius: 0; }
-    .output-section { display: block !important; margin: 0; }
-  }
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+  body { background: #fff; }
+  header, .hero, .mode-tabs, .form-card, .btn-generate, .output-header, .loading-wrap { display: none !important; }
+  #resumePreview { box-shadow: none; padding: 0; border-radius: 0; }
+  .output-section { display: block !important; margin: 0; }
+}
 </style>
 </head>
 <body>
