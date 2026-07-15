@@ -343,7 +343,20 @@ let currentTone = 'Professional';
 let currentTone2 = 'Professional';
 let currentTemplate = 'tpl-purple';
 function downloadPDF() {
-  window.print();
+  const element = document.getElementById('resumePreview');
+  const printWindow = window.open('', '_blank');
+  
+  printWindow.document.write('<html><head><title>Resume</title>');
+  printWindow.document.write('<style>body{margin:0;padding:20px;} ' + document.querySelector('style').innerHTML + '</style>');
+  printWindow.document.write('</head><body>');
+  printWindow.document.write('<div id="resumePreview" class="' + element.className + '">' + element.innerHTML + '</div>');
+  printWindow.document.write('</body></html>');
+  printWindow.document.close();
+  
+  setTimeout(function() {
+    printWindow.focus();
+    printWindow.print();
+  }, 500);
 }
 
 function setMode(mode) {
