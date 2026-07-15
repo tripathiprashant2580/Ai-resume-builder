@@ -343,6 +343,7 @@ let currentTone = 'Professional';
 let currentTone2 = 'Professional';
 let currentTemplate = 'tpl-purple';
 function downloadPDF() {
+function downloadPDF() {
   const element = document.getElementById('resumePreview');
   const btn = event.target;
   const originalText = btn.textContent;
@@ -351,13 +352,16 @@ function downloadPDF() {
 
   setTimeout(function() {
     const opt = {
-      margin: 0,
+      margin: [10, 10, 10, 10],
       filename: 'resume.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
-        scale: 2, 
+        scale: 3, 
         useCORS: true,
-        allowTaint: true
+        allowTaint: true,
+        foreignObjectRendering: true,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight
       },
       jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
     };
@@ -371,6 +375,7 @@ function downloadPDF() {
       alert('Download failed: ' + err.message);
     });
   }, 300);
+
 }
 function setMode(mode) {
   currentMode = mode;
